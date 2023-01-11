@@ -1,0 +1,29 @@
+import sqlite3
+import pandas as pd
+
+# Connect to the database
+conn = sqlite3.connect('bioinformatics_db.db')
+
+# Prompt the user for input
+user_input = input('Enter sequence or gene name to search: ')
+
+# Execute the SQL query
+query = f"SELECT * FROM sequences WHERE sequence LIKE '%{user_input}%' OR gene_name LIKE '%{user_input}%'"
+result = conn.execute(query)
+
+# Fetch all the rows as a list of tuples
+rows = result.fetchall()
+
+# If no results are found
+if not rows:
+    print("No results found.")
+
+else:
+    # Convert the list of tuples to a pandas DataFrame
+    data = pd.DataFrame(rows, columns=['ID', 'Sequence', 'Gene Name', 'Organism'])
+
+    # Display the data in a table
+    print(data.to_string())
+
+# Close the connection
+conn.close()
